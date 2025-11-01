@@ -7,7 +7,9 @@
     <!-- Build paginator -->
     {{ $pages := where .Site.RegularPages "Section" "in" .Site.Params.mainSections }}
     {{ $notHidden := where $pages "Params.hidden" "!=" true }}
-    {{ $filtered := $notHidden }}
+    <!-- FILTER: only present or future events -->
+    {{ $now := now }}
+    {{ $filtered := where $notHidden ".Date" "ge" $now }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
@@ -23,8 +25,11 @@
 
     <!-- Build paginator -->
     {{ $notHidden := where .Pages "Params.hidden" "!=" true }}
+    <!-- FILTER: only present or future events -->
+    {{ $now := now }}
+    {{ $filtered := where $notHidden ".Date" "ge" $now }}
     <!-- SORT: oldest first (Date ascending) -->
-    {{ $sorted := sort $notHidden "Date" "asc" }}
+    {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
 
     <!-- {TAXONOMY_TYPE}: {TAXONOMY_TERM} -->
