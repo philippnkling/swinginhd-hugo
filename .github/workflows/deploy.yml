@@ -39,7 +39,7 @@ jobs:
         run: |
           rm -rf content/post
           mkdir -p content/post
-          cp -r content-source/posts/* content/post/
+          cp -r content-source/post/* content/post/
 
       # 4️⃣ Cache Hugo resources (optional, keeps builds fast)
       - name: Cache Hugo resources
