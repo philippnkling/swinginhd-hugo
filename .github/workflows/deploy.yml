@@ -65,7 +65,7 @@ jobs:
 
       # 7️⃣ Build Hugo site
       - name: Build
-        run: hugo --minify --gc
+        run: hugo --minify --gc --buildFuture
 
       # 8️⃣ Deploy to GitHub Pages
       - name: Deploy 🚀
