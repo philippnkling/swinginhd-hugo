@@ -5,10 +5,12 @@
     <!-- Homepage, and it's pagination -->
 
     <!-- Build paginator -->
-    <!--{{ $pages := where .Site.RegularPages.ByLastmod.Reverse "Section" "in" .Site.Params.mainSections }}
-    {{ $notHidden := where .Site.RegularPages "Params.hidden" "!=" true }}
-    {{ $filtered := ($pages | intersect $notHidden) }}
-    {{ $pag := .Paginate ($filtered) }}
+    {{ $pages := where .Site.RegularPages "Section" "in" .Site.Params.mainSections }}
+    {{ $notHidden := where $pages "Params.hidden" "!=" true }}
+    {{ $filtered := $notHidden }}
+    <!-- SORT: oldest first (Date ascending) -->
+    {{ $sorted := sort $filtered "Date" "asc" }}
+    {{ $pag := .Paginate $sorted }}
 
     {{ if .Paginator.HasPrev }}
         <!-- Paginated. Append page number to title -->
@@ -21,7 +23,9 @@
 
     <!-- Build paginator -->
     {{ $notHidden := where .Pages "Params.hidden" "!=" true }}
-    {{ $pag := .Paginate ($notHidden) }}
+    <!-- SORT: oldest first (Date ascending) -->
+    {{ $sorted := sort $notHidden "Date" "asc" }}
+    {{ $pag := .Paginate $sorted }}
 
     <!-- {TAXONOMY_TYPE}: {TAXONOMY_TERM} -->
     {{ $title = slice (title .Data.Singular) ": " $title }}
@@ -36,3 +40,4 @@
 {{- end -}}
 
 {{ return $title }}
+
