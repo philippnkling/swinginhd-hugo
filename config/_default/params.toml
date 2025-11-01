@@ -17,7 +17,7 @@ emoji = "💃"
 subtitle = "This website lists swing dance related events in and around Heidelberg. It is managed by swing dancers from Swing in Heidelberg e.V. If you have any events you want to add, please click on the Github Logo below and follow the instructions."
 
 [sidebar.avatar]
-enabled = true
+enabled = false
 local = true
 src = "img/avatar.png"
 
