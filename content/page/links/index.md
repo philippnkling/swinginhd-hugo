@@ -1,10 +1,18 @@
 ---
 title: Links
 links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+  - title: SwingStep
+    description: SwingStep is the local dancing school in Heidelberg
+    website: https://swingstep.com/
+    image: https://image.swingstep.net/img/v3/media.swingstep.net/q=90&w=160&h=50&fit=max/swingstep.com/www/swingstep-sage-assets/SWST_Logo.png
+  - title: Laura Stahl
+    description: Homepage of Laura Stahl - a swing dance teacher in Heidelberg
+    website: https://www.laurastahl.de/
+    image: https://lh3.googleusercontent.com/sitesv/AAzXCkeaOG9uDV0kBR4QosdBarAqGFCANCEHgfK5uPgTAIctwAG2jN5cuCbrQvC63ABqPDCNqbVHbgwgTvCZpODBky6DB6ogm9nGDdGpeRpKcqabRl37mnhS4_dbckhKHO1FJIY12EY09d4CqyttaiSSZK2HpzlaT6wIdNT-crSaTGBye4kXGyVdnLwog8u3sxZyuawKZj5Dwqel09jQErBV1zMVWkMBfl5ivkUu5ko=w1280
+  - title: Annette Kühnle
+    description: Homepage of Annette Kühnle - a swing dance teacher in Heidelberg
+    website: https://www.annettedances.com/
+    image: https://assets.jimstatic.com/s/img/cms/background/fix/10029.jpg
 menu:
     main: 
         weight: 4
@@ -13,21 +21,3 @@ menu:
 
 comments: false
 ---
-
-To use this feature, add `links` section to frontmatter.
-
-This page's frontmatter:
-
-```yaml
-links:
-  - title: GitHub
-    description: GitHub is the world's largest software development platform.
-    website: https://github.com
-    image: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-  - title: TypeScript
-    description: TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
-    website: https://www.typescriptlang.org
-    image: ts-logo-128.jpg
-```
-
-`image` field accepts both local and external images.
