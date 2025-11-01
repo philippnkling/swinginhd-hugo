@@ -15,6 +15,10 @@ jobs:
 
     permissions:
       contents: write   # needed for GitHub Pages deploy
+      pages: write
+      id-token: write
+      actions: read
+      metadata: read
 
     steps:
       # 1️⃣ Checkout main site repo
@@ -29,6 +33,7 @@ jobs:
         with:
           repository: philippnkling/swinginhd-hugo-content
           path: content-source
+          ref: main
 
       # 3️⃣ Copy Markdown posts into Hugo content directory
       - name: Sync posts
