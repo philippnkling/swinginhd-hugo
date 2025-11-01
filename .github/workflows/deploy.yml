@@ -39,7 +39,6 @@ jobs:
         run: |
           rm -rf content/post
           mkdir -p content/post
-#          cp -r content-source/post/* content/post/
           rsync -av --exclude 'README.md' content-source/post/ content/post/
 
 
