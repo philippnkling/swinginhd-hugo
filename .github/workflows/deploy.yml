@@ -1,51 +1,73 @@
 name: Deploy to Github Pages
 
 on:
-    push:
-        branches: [master]
-    pull_request:
-        branches: [master]
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  # Optional: automatically rebuild site when content repo changes
+  repository_dispatch:
+    types: [content-updated]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        permissions:
-            # Give the default GITHUB_TOKEN write permission to commit and push the
-            # added or changed files to the repository.
-            contents: write
+    permissions:
+      contents: write   # needed for GitHub Pages deploy
 
-        steps:
-            - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    steps:
+      # 1️⃣ Checkout main site repo
+      - name: Checkout site repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Cache Hugo resources
-              uses: actions/cache@v4
-              env:
-                  cache-name: cache-hugo-resources
-              with:
-                  path: resources
-                  key: ${{ env.cache-name }}
+      # 2️⃣ Checkout the external content repository
+      - name: Checkout content repository
+        uses: actions/checkout@v4
+        with:
+          repository: philippnkling/swinginhd-hugo-content
+          path: content-source
 
-            - uses: actions/setup-go@v5
-              with:
-                  go-version: "^1.17.0"
-            - run: go version
+      # 3️⃣ Copy Markdown posts into Hugo content directory
+      - name: Sync posts
+        run: |
+          rm -rf content/post
+          mkdir -p content/post
+          cp -r content-source/posts/* content/post/
 
-            - name: Setup Hugo
-              uses: peaceiris/actions-hugo@v2
-              with:
-                  hugo-version: "latest"
-                  extended: true
+      # 4️⃣ Cache Hugo resources (optional, keeps builds fast)
+      - name: Cache Hugo resources
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-hugo-resources
+        with:
+          path: resources
+          key: ${{ env.cache-name }}
 
-            - name: Build
-              run: hugo --minify --gc
+      # 5️⃣ Setup Go (needed for some Hugo themes)
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "^1.17.0"
 
-            - name: Deploy 🚀
-              uses: JamesIves/github-pages-deploy-action@v4
-              with:
-                  branch: gh-pages
-                  folder: public
-                  clean: true
-                  single-commit: true
+      # 6️⃣ Setup Hugo
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: "latest"
+          extended: true
+
+      # 7️⃣ Build Hugo site
+      - name: Build
+        run: hugo --minify --gc
+
+      # 8️⃣ Deploy to GitHub Pages
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: public
+          clean: true
+          single-commit: true
+
