@@ -6,7 +6,7 @@ favicon = "/favicon.png"
 
 [footer]
 since = 2020
-customText = "Test for custom text in the footer"
+customText = ""
 
 [dateFormat]
 published = "02 January 2006"
@@ -24,7 +24,7 @@ src = "img/avatar.png"
 [article]
 headingAnchor = false
 math = false
-readingTime = true
+readingTime = false
 
 [article.license]
 enabled = false

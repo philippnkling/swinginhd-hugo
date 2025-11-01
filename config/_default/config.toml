@@ -16,8 +16,3 @@ hasCJKLanguage = false
 
 [pagination]
 pagerSize = 10
-
-[params.article]
-showReadingTime = false
-showDate = true
-showUpdated = false
