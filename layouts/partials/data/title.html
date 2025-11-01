@@ -5,7 +5,7 @@
     <!-- Homepage, and it's pagination -->
 
     <!-- Build paginator -->
-    {{ $pages := where .Site.RegularPages.ByLastmod.Reverse "Section" "in" .Site.Params.mainSections }}
+    <!--{{ $pages := where .Site.RegularPages.ByLastmod.Reverse "Section" "in" .Site.Params.mainSections }}
     {{ $notHidden := where .Site.RegularPages "Params.hidden" "!=" true }}
     {{ $filtered := ($pages | intersect $notHidden) }}
     {{ $pag := .Paginate ($filtered) }}
