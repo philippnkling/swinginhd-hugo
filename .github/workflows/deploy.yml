@@ -16,7 +16,7 @@ jobs:
       contents: write   # needed for GitHub Pages deploy
       pages: write
       id-token: write
-      actions: read
+      actions: write
 
     steps:
       # 1️⃣ Checkout main site repo
