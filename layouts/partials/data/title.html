@@ -9,7 +9,8 @@
     {{ $notHidden := where $pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
     {{ $now := now }}
-    {{ $filtered := where $notHidden ".Date" "ge" $now }}
+    {{ $threeDaysAgo := $now.AddDate 0 0 -3 }}
+    {{ $filtered := where $notHidden ".Date" "ge" $threeDaysAgo }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
@@ -27,7 +28,8 @@
     {{ $notHidden := where .Pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
     {{ $now := now }}
-    {{ $filtered := where $notHidden ".Date" "ge" $now }}
+    {{ $threeDaysAgo := $now.AddDate 0 0 -3 }}
+    {{ $filtered := where $notHidden ".Date" "ge" $threeDaysAgo }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
