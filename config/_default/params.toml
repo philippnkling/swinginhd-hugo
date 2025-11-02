@@ -3,6 +3,8 @@ mainSections = ["post"]
 # Output page's full content in RSS.
 rssFullContent = true
 favicon = "/favicon.png"
+# How many days in the past should be displayed? 
+recentDays = 3
 
 [footer]
 since = 2025

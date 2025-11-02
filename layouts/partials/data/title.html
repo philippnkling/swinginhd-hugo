@@ -8,9 +8,10 @@
     {{ $pages := where .Site.RegularPages "Section" "in" .Site.Params.mainSections }}
     {{ $notHidden := where $pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
+    {{ $days := default 3 .Site.Params.recentDays }}
     {{ $now := now }}
-    {{ $threeDaysAgo := $now.AddDate 0 0 -3 }}
-    {{ $filtered := where $notHidden ".Date" "ge" $threeDaysAgo }}
+    {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
+    {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
@@ -27,9 +28,10 @@
     <!-- Build paginator -->
     {{ $notHidden := where .Pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
+    {{ $days := default 3 .Site.Params.recentDays }}
     {{ $now := now }}
-    {{ $threeDaysAgo := $now.AddDate 0 0 -3 }}
-    {{ $filtered := where $notHidden ".Date" "ge" $threeDaysAgo }}
+    {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
+    {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
