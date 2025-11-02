@@ -39,7 +39,7 @@ jobs:
         run: |
           rm -rf content/post
           mkdir -p content/post
-          rsync -av --exclude 'README.md' content-source/post/ content/post/
+          rsync -av --exclude 'README.md' content-source/post_processed/ content/post/
 
 
       # 4️⃣ Cache Hugo resources (optional, keeps builds fast)
