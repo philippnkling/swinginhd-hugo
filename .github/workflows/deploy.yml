@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2️⃣ Checkout the external content repository
+      # 2️⃣ Checkout external content repository
       - name: Checkout content repository
         uses: actions/checkout@v4
         with:
@@ -34,15 +34,40 @@ jobs:
           path: content-source
           ref: main
 
-      # 3️⃣ Copy Markdown posts into Hugo content directory
-      - name: Sync posts
+      # 3️⃣ Clean and prepare Hugo content directory
+      - name: Prepare Hugo content directory
         run: |
+          echo "🧹 Cleaning old content..."
           rm -rf content/post
           mkdir -p content/post
-          rsync -av --exclude 'README.md' content-source/post_processed/ content/post/
 
+      # 4️⃣ Preprocess Markdown posts
+      - name: Process Markdown posts
+        run: |
+          cd content-source/post
 
-      # 4️⃣ Cache Hugo resources (optional, keeps builds fast)
+          for file in *.md; do
+            echo "🔍 Processing $file ..."
+            filename=$(basename "$file")
+            name="${filename%.md}"
+
+            # Extract image reference if present
+            image=$(grep -E '^image:' "$file" | sed -E 's/image:\s*//')
+
+            if [[ -n "$image" && -f "../img/$image" ]]; then
+              echo "📸 Found image '$image' for $filename"
+              mkdir -p "../../content/post/$name"
+              cp "$file" "../../content/post/$name/index.md"
+              cp "../img/$image" "../../content/post/$name/$image"
+            else
+              echo "ℹ️  No image found or referenced for $filename"
+              cp "$file" "../../content/post/$filename"
+            fi
+          done
+
+          cd ../..
+
+      # 5️⃣ Cache Hugo resources (optional, keeps builds fast)
       - name: Cache Hugo resources
         uses: actions/cache@v4
         env:
@@ -51,23 +76,23 @@ jobs:
           path: resources
           key: ${{ env.cache-name }}
 
-      # 5️⃣ Setup Go (needed for some Hugo themes)
+      # 6️⃣ Setup Go (needed for some Hugo themes)
       - uses: actions/setup-go@v5
         with:
           go-version: "^1.17.0"
 
-      # 6️⃣ Setup Hugo
+      # 7️⃣ Setup Hugo
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "latest"
           extended: true
 
-      # 7️⃣ Build Hugo site
+      # 8️⃣ Build Hugo site
       - name: Build
         run: hugo --minify --gc --buildFuture
 
-      # 8️⃣ Deploy to GitHub Pages
+      # 9️⃣ Deploy to GitHub Pages
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
