@@ -16,9 +16,6 @@
     {{- /* compute threshold: now minus $days days */ -}}
     {{- $now := now -}}
     {{- $since := $now.AddDate 0 0 (mul -1 $days) -}}
-    {{/* Optional debug: remove or comment out after testing
-    <p style="color:tomato">DEBUG: recentDays={{ $days }} now={{ $now }} since={{ $since }}</p>
-*/}}
     {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
@@ -44,9 +41,6 @@
     {{- /* compute threshold: now minus $days days */ -}}
     {{- $now := now -}}
     {{- $since := $now.AddDate 0 0 (mul -1 $days) -}}
-    {{/* Optional debug: remove or comment out after testing
-    <p style="color:tomato">DEBUG: recentDays={{ $days }} now={{ $now }} since={{ $since }}</p>
-*/}}
     {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}

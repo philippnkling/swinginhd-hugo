@@ -4,7 +4,7 @@ mainSections = ["post"]
 rssFullContent = true
 favicon = "/favicon.png"
 # How many days in the past should be displayed? 
-recentDays = 10
+recentDays = 2
 
 [footer]
 since = 2025
