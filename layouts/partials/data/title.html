@@ -11,8 +11,8 @@
     {{ $days := default 3 .Site.Params.recentDays }}
     {{ $now := now }}
     {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
-    {{ $twoDaysAgo := $now.AddDate 0 0 -2 }}
-    {{ $filtered := where $notHidden ".Date" "ge" $twoDaysAgo }}
+    {{ $someDaysAgo := $now.AddDate 0 0 -10 }}
+    {{ $filtered := where $notHidden ".Date" "ge" $someDaysAgo }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
@@ -32,8 +32,8 @@
     {{ $days := default 3 .Site.Params.recentDays }}
     {{ $now := now }}
     {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
-    {{ $twoDaysAgo := $now.AddDate 0 0 -2 }}
-    {{ $filtered := where $notHidden ".Date" "ge" $twoDaysAgo }}
+    {{ $someDaysAgo := $now.AddDate 0 0 -10}}
+    {{ $filtered := where $notHidden ".Date" "ge" $someDaysAgo }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
