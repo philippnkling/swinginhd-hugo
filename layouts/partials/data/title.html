@@ -8,11 +8,18 @@
     {{ $pages := where .Site.RegularPages "Section" "in" .Site.Params.mainSections }}
     {{ $notHidden := where $pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
-    {{ $days := default 3 .Site.Params.recentDays }}
-    {{ $now := now }}
-    {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
-    {{ $someDaysAgo := $now.AddDate 0 0 -10 }}
-    {{ $filtered := where $notHidden ".Date" "ge" $someDaysAgo }}
+    {{- /* compute recentDays safely */ -}}
+    {{- $rawDays := .Site.Params.recentDays -}}
+    {{- $days := default 3 $rawDays -}}
+    {{- /* ensure $days is an int (defensive conversion) */ -}}
+    {{- $days = int $days -}}
+    {{- /* compute threshold: now minus $days days */ -}}
+    {{- $now := now -}}
+    {{- $since := $now.AddDate 0 0 (mul -1 $days) -}}
+    {{/* Optional debug: remove or comment out after testing
+    <p style="color:tomato">DEBUG: recentDays={{ $days }} now={{ $now }} since={{ $since }}</p>
+*/}}
+    {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
@@ -29,11 +36,18 @@
     <!-- Build paginator -->
     {{ $notHidden := where .Pages "Params.hidden" "!=" true }}
     <!-- FILTER: only present or future events -->
-    {{ $days := default 3 .Site.Params.recentDays }}
-    {{ $now := now }}
-    {{ $since := $now.AddDate 0 0 (mul -1 $days) }}
-    {{ $someDaysAgo := $now.AddDate 0 0 -10}}
-    {{ $filtered := where $notHidden ".Date" "ge" $someDaysAgo }}
+    {{- /* compute recentDays safely */ -}}
+    {{- $rawDays := .Site.Params.recentDays -}}
+    {{- $days := default 3 $rawDays -}}
+    {{- /* ensure $days is an int (defensive conversion) */ -}}
+    {{- $days = int $days -}}
+    {{- /* compute threshold: now minus $days days */ -}}
+    {{- $now := now -}}
+    {{- $since := $now.AddDate 0 0 (mul -1 $days) -}}
+    {{/* Optional debug: remove or comment out after testing
+    <p style="color:tomato">DEBUG: recentDays={{ $days }} now={{ $now }} since={{ $since }}</p>
+*/}}
+    {{ $filtered := where $notHidden ".Date" "ge" $since }}
     <!-- SORT: oldest first (Date ascending) -->
     {{ $sorted := sort $filtered "Date" "asc" }}
     {{ $pag := .Paginate $sorted }}
