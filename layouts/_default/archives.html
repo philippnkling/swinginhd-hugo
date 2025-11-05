@@ -1,0 +1,49 @@
+{{ define "body-class" }}template-archives{{ end }}
+{{ define "main" }}
+    <header>
+        {{- $taxonomy := $.Site.GetPage "taxonomyTerm" "categories" -}}
+        {{- $terms := $taxonomy.Pages -}}
+        {{ if $terms }}
+        <h2 class="section-title">{{ $taxonomy.Title }}</h2>
+        <div class="subsection-list">
+            <div class="article-list--tile">
+                {{ range $terms }}
+                    {{ partial "article-list/tile" (dict "context" . "size" "250x150" "Type" "taxonomy") }}
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </header>
+
+    {{/* --- Compute recentDays and cutoff date --- */}}
+    {{- $rawDays := .Site.Params.recentDays -}}
+    {{- $days := default 3 $rawDays | int -}}
+    {{- $now := now -}}
+    {{- $since := $now.AddDate 0 0 (mul -1 $days) -}}
+
+    {{/* --- Collect all main posts that are NOT hidden and are OLDER than recentDays --- */}}
+    {{- $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections -}}
+    {{- $notHidden := where $pages "Params.hidden" "!=" true -}}
+    {{- $past := where $notHidden ".Date" "lt" $since -}}
+    {{- $sorted := sort $past "Date" "desc" -}}
+
+    {{ if not (len $sorted) }}
+      <p>No past events yet.</p>
+    {{ else }}
+      {{ range $sorted.GroupByDate "2006" }}
+        {{ $id := lower (replace .Key " " "-") }}
+        <div class="archives-group" id="{{ $id }}">
+            <h2 class="archives-date section-title">
+                <a href="{{ $.RelPermalink }}#{{ $id }}">{{ .Key }}</a>
+            </h2>
+            <div class="article-list--compact">
+                {{ range .Pages }}
+                    {{ partial "article-list/compact" . }}
+                {{ end }}
+            </div>
+        </div>
+      {{ end }}
+    {{ end }}
+
+    {{ partialCached "footer/footer" . }}
+{{ end }}
