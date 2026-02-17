@@ -1,25 +1,26 @@
-name: Deploy to Github Pages
+name: Build and Deploy Hugo Site
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
   repository_dispatch:
     types: [content-updated]
+  schedule:
+    - cron: "0 3 * * *"   # Daily rebuild at 03:00 UTC
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write   # needed for GitHub Pages deploy
+      contents: write
       pages: write
       id-token: write
       actions: write
 
     steps:
-      # 1️⃣ Checkout main site repo
+      # 1️⃣ Checkout Hugo site repository
       - name: Checkout site repository
         uses: actions/checkout@v4
         with:
@@ -34,86 +35,30 @@ jobs:
           path: content-source
           ref: main
 
-      # 3️⃣ Clean and prepare Hugo content directory
-      - name: Prepare Hugo content directory
+      # 3️⃣ Ensure content repo exists
+      - name: Verify content repository checkout
         run: |
-          echo "🧹 Cleaning old content..."
-          rm -rf content/post
-          mkdir -p content/post
-
-      # 4️⃣ Preprocess Markdown posts (handle images + credits)
-      - name: Process Markdown posts
-        run: |
-          cd content-source/post
-
-          # Load image credit information into an associative array
-          declare -A credits
-          if [[ -f ../img/credit.csv ]]; then
-            echo "📖 Loading image credits..."
-            while IFS=, read -r filename credit; do
-              # Remove surrounding quotes if present
-              filename=$(echo "$filename" | sed 's/^"//;s/"$//')
-              credit=$(echo "$credit" | sed 's/^"//;s/"$//')
-              credits["$filename"]="$credit"
-            done < <(tail -n +2 ../img/credit.csv)  # skip header line
-          else
-            echo "⚠️ No credit.csv file found in img directory."
+          if [ ! -d "content-source/post" ]; then
+            echo "❌ Content repository not checked out correctly."
+            exit 1
           fi
 
-          for file in *.md; do
-            echo "🔍 Processing $file ..."
-            filename=$(basename "$file")
-            name="${filename%.md}"
+      # 4️⃣ Process content
+      - name: Process Markdown content
+        run: bash scripts/process_content.sh
 
-            # Extract image reference if present
-            image=$(grep -E '^image:' "$file" | sed -E 's/image:\s*//')
-
-            if [[ -n "$image" && -f "../img/$image" ]]; then
-              echo "📸 Found image '$image' for $filename"
-              mkdir -p "../../content/post/$name"
-              cp "$file" "../../content/post/$name/index.md"
-              cp "../img/$image" "../../content/post/$name/$image"
-
-              # Add credit if available
-              credit="${credits[$image]}"
-              if [[ -n "$credit" ]]; then
-                echo "🖋️ Adding credit for $image"
-                echo -e "\n\n---\n$credit" >> "../../content/post/$name/index.md"
-              fi
-            else
-              echo "ℹ️  No image found or referenced for $filename"
-              cp "$file" "../../content/post/$filename"
-            fi
-          done
-
-          cd ../..
-
-      # 5️⃣ Cache Hugo resources (optional, keeps builds fast)
-      - name: Cache Hugo resources
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-hugo-resources
-        with:
-          path: resources
-          key: ${{ env.cache-name }}
-
-      # 6️⃣ Setup Go (needed for some Hugo themes)
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "^1.17.0"
-
-      # 7️⃣ Setup Hugo
+      # 5️⃣ Setup Hugo
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "latest"
           extended: true
 
-      # 8️⃣ Build Hugo site
+      # 6️⃣ Build Hugo site
       - name: Build
         run: hugo --minify --gc --buildFuture
 
-      # 9️⃣ Deploy to GitHub Pages
+      # 7️⃣ Deploy to GitHub Pages
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -121,4 +66,3 @@ jobs:
           folder: public
           clean: true
           single-commit: true
-
