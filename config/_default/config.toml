@@ -14,5 +14,8 @@ hasCJKLanguage = false
 # Change it to your Disqus shortname before using
 # disqusShortname = "hugo-theme-stack"
 
+# Ignore Example files
+ignoreFiles = ["exampleSite"]
+
 [pagination]
 pagerSize = 10
